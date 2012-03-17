@@ -1,0 +1,17 @@
+We are the humans behind WP Paintbrush
+
+/* TEAM */
+Name: Ryan Hellyer
+Title: Lead Developer
+Corporate website: http://pixopoint.com/
+Personal website: http://ryanhellyer.net/
+Location: Oslo, Norway
+Twitter: ryanhellyer
+Google Plus: http://gplus.to/ryanhellyer
+
+/* THANKS */
+Mark Jaquith, Dion Hulse, Ron Rennick, Ronald Huereca, Alex Cragg, Josh Davies, Utkarsh Kukreti, Paul O'Brien, Anthony Cole
+
+/* META */
+Updated: 2012/02/22
+See: http://humanstxt.org/

@@ -1,0 +1,257 @@
+/* Admin icon */
+#icon-pressabl-icon {
+	background: url(images/h2_icon.png) no-repeat;
+}
+
+/* Tabber CSS */
+#pressabl-tabs {
+	width: auto;
+	margin: 20px 0 0 0;
+}
+#pressabl-tabs {
+	width: 100%;
+	margin: 0 10px 0 0;
+	padding: 0;
+	float: left;
+}
+#pressabl-tabs .ui-tabs-nav {
+	list-style: none;
+	position: relative;
+	padding: 0;
+}
+#pressabl-tabs .ui-tabs-nav li {
+	position: relative;
+	float: left;
+	margin: 0;
+	padding: 0;
+	border-top: 1px solid #e3e3e3;
+	background: #f1f1f1;
+}
+#pressabl-tabs .ui-tabs-nav li:first-child {
+	border-left: 1px solid #e3e3e3;
+	padding: 0 0 0 5px;
+	-moz-border-radius-topleft: 8px;
+	-webkit-border-top-left-radius: 8px;
+}
+#pressabl-tabs .ui-tabs-nav li:last-child {
+	border-right: 1px solid #e3e3e3;
+	padding: 0 5px 0 0;
+	-moz-border-radius-topright: 8px;
+	-webkit-border-top-right-radius: 8px;
+}
+#pressabl-tabs .ui-tabs-nav li:last-child span {
+	border-right: none;
+}
+
+#pressabl-tabs .ui-tabs-nav li a {
+	height: 28px;
+	line-height: 28px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	font-size: 12px;
+	float: left;
+	text-decoration: none;
+	margin: 0;
+	padding: 0 4px;
+	color: #21759b;
+	border-top: 1px solid #fff;
+	text-decoration: none;
+}
+#pressabl-tabs .ui-tabs-nav li span {
+	border-right: 1px solid #e3e3e3;
+	display: block;
+	height: 28px;
+	line-height: 28px;
+	float: left;
+	margin: 0;
+	padding: 0 9px 0 29px;
+	background: #f1f1f1 url(images/sprite.png) -1px -34px no-repeat;
+}
+#pressabl-tabs .ui-tabs-nav li a:link {
+	color: #21759b;
+}
+#pressabl-tabs .ui-tabs-nav li a:visited {
+	color: #21759b;
+}
+#pressabl-tabs .ui-tabs-nav li.ui-tabs-selected span {
+	color: #000 !important;
+}
+#pressabl-tabs .ui-tabs-nav li a:hover span,
+#pressabl-tabs .ui-tabs-nav li.ui-tabs-selected span {
+	background-position: -1px -2px;
+	color: #D54E21;
+}
+
+/* Pages */
+li#pressabl-pages-options span {
+	background-position: 0 -414px !important;
+}
+li#pressabl-pages-options a:hover span,
+li#pressabl-pages-options.ui-tabs-selected span {
+	background-position: 0 -382px !important;
+}
+/* Single */
+li#pressabl-single-options span {
+	background-position: 0 -352px !important;
+}
+li#pressabl-single-options a:hover span,
+li#pressabl-single-options.ui-tabs-selected span {
+	background-position: 0 -320px !important;
+}
+/* CSS */
+li#pressabl-css-options span {
+	background-position: 0 -474px !important;
+}
+li#pressabl-css-options a:hover span,
+li#pressabl-css-options.ui-tabs-selected span {
+	background-position: 0 -442px !important;
+}
+/* Extras */
+li#pressabl-extras-options span {
+	background-position: 0 -535px !important;
+}
+li#pressabl-extras-options a:hover span, 
+li#pressabl-extras-options.ui-tabs-selected span {
+	background-position: 0 -503px !important;
+}
+/* Includes */
+li#pressabl-includes-options span {
+	background-position: 0 -654px !important;
+}
+li#pressabl-includes-options a:hover span, 
+li#pressabl-includes-options.ui-tabs-selected span {
+	background-position: 0 -622px !important;
+}
+/* Archive */
+li#pressabl-archives-options span {
+	background-position: 0 -711px !important;
+}
+li#pressabl-archives-options a:hover span, 
+li#pressabl-archives-options.ui-tabs-selected span {
+	background-position: 0 -684px !important;
+}
+
+#pressabl-tabs .ui-tabs-nav li a, 
+#pressabl-tabs .ui-tabs-nav li.ui-tabs-selected a { /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+	cursor: pointer;
+}
+
+/* Tab content */
+#pressabl-tabs .ui-tabs-panel {
+	margin: 0;
+	padding: 0;
+	display: block;
+	position: relative;
+	top: 28px;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	-moz-border-radius-bottomright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	-webkit-border-bottom-right-radius: 10px;
+ 	border: 1px solid #e3e3e3;
+ 	background: #fff;
+}
+#pressabl-tabs .ui-tabs-hide {
+	display: none !important;
+}
+
+.tab-inner {
+	position: relative;
+	top: -15px;
+	padding: 0 20px 0 20px;
+	clear: both;
+}
+.tab-inner p {
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+.tab-inner h3 {
+	margin: 20px 0 5px 0;
+	padding: 0;
+}
+.tab-inner h4 {
+	margin: 0;
+	padding: 0;
+	text-decoration: underline;
+}
+.tab-inner li {
+	list-style: disc;
+	margin: 2px 0 5px 20px;
+}
+.tab-inner p.textarea-wrapper {
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius: 10px;
+	border-top-left-radius: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	border: 1px solid #ddd;
+	padding: 4px 1px 4px 6px;
+}
+.tab-inner p.textarea-wrapper textarea {
+	margin: 0;
+	padding: 0;
+	background: #fff;
+	font-family: monospace;
+	font-size: 0.9em;
+	color: #666;
+	height: 400px;
+	width: 100%;
+	border: none;
+}
+body .tab-inner p.medium  textarea {
+	height: 180px;
+}
+.tab-inner textarea.short_textarea {
+	font-family: monospace;
+	font-size: 0.9em;
+	color: #666;
+	display:inline;
+	width:400px;
+	padding: 3px 5px;
+	margin: 0;
+	height: 22px;
+	line-height: 14px;
+	position: relative;
+	top: 7px;
+}
+.tab-inner tfoot th {
+	font-size:0.8em;
+	font-family: sans-serif;
+}
+.tab-inner table {
+	width: 500px;
+}
+.tab-inner table td {
+	padding: 3px;
+	border-right: 1px solid #efefef;
+	border-bottom:1px solid #efefef !important;
+}
+.tab-inner table th {
+	border-right: 1px solid #ddd;
+}
+table.pressabl-menus {
+	width: 500px;
+}
+.tab-inner textarea,
+.tab-inner table input[type=text] {
+	width: 100%;
+	margin: 0;
+	border: none;
+	padding:4px 0;
+	text-indent: 5px;
+	color: #666;
+	font-family: monospace;
+	background: none;
+}
+.tab-inner label {
+	background: none;
+}
+.tab-inner table input[type=checkbox] {
+	margin: 5px 0 0 12px;
+}
+.tab-inner table .hard-crop {
+	width: 120px;
+}
