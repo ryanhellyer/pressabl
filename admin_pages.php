@@ -288,7 +288,7 @@ class Pressabl_Admin {
 		wp_enqueue_script( 'jquery-ui-tabs' ); // Adds support for tabber menus
 		wp_enqueue_script( 'jquery-tabber' ); // Creates tabber menu
 	}
-	
+
 	/**
 	 * Add stylesheet
 	 * 
@@ -297,6 +297,75 @@ class Pressabl_Admin {
 	 */
 	public function settings_admin_styles() {
 		wp_enqueue_style( 'wppb-admin-css', get_template_directory_uri() . '/admin.css', false, '', 'screen' );
+	}
+
+	/**
+	 * Add stylesheet
+	 * 
+	 * @since 0.1
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 */
+	public function data_storage() {
+
+		// Set post status
+		if ( isset( $_POST['draft'] ) )
+			$post_status = 'draft';
+		elseif ( isset( $_POST['publish'] ) )
+			$post_status = 'publish';
+		else
+			return;
+			
+		// Do nonce security check
+		//check_admin_referer( 'pressabl' );
+
+		// Process data
+		$secondary = $this->process_templates();
+		$thumbs    = $this->process_thumbnails();
+		$widgets   = $this->process_widgets();
+		$menus     = $this->process_menus();
+		$primary = array(
+			'thumbs'  => $thumbs,
+			'widgets' => $widgets,
+			'menus'   => $menus,
+		);
+
+		// Cache primary settings in an option (can be accessed faster as an option - useful since this data is accessed on every page load)
+		if ( 'publish' == $post_status )
+			update_option( WPPB_FUNCTIONS, $primary );
+
+		$post_content = array(
+			'primary'   => $primary,
+			'secondary' => $secondary,
+		);
+		$post_content = serialize( $post_content );
+
+		// Create post object
+		$pressabl = array(
+			'post_content' => $post_content,
+			'post_type'    => 'pressabl',
+			'post_status'  => $post_status,
+		);
+
+		// Insert the post into the database
+		$post_id = wp_insert_post( $pressabl );
+
+		// Delete old posts
+		$args = array(
+			'post_type'    => 'pressabl',
+			'numberposts'  => ( PRESSABL_REVISIONS + 1 ),
+			'post_status'  => $post_status,
+		);
+		$posts = get_posts( $args ); // Grab posts as array
+		if ( isset( $posts[PRESSABL_REVISIONS] ) ) {
+			$post = $posts[PRESSABL_REVISIONS]; // Grab last post
+			$post_id = $post->ID; // Set the post ID
+			$count_posts = wp_count_posts( 'pressabl' ); // Count the number of posts
+
+			// Only delete post if it exists
+			if ( $count_posts->$post_status > PRESSABL_REVISIONS )
+				wp_delete_post( $post_id ); // Delete post
+		}
+
 	}
 
 	/**
@@ -309,26 +378,7 @@ class Pressabl_Admin {
 	public function edit_template_do_page() {
 
 		// If form submitted, then process form data
-		if ( isset( $_POST['name_menu'] ) ) {
-
-			// Do nonce security check
-			//check_admin_referer( 'pressabl' );
-
-			// Process data
-			$templates = $this->process_templates();
-			$thumbs    = $this->process_thumbnails();
-			$widgets   = $this->process_widgets();
-			$menus     = $this->process_menus();
-			$output_functions = array(
-				'thumbs'  => $thumbs,
-				'widgets' => $widgets,
-				'menus'   => $menus,
-			);
-
-			// Stash dat shit in the DB
-			update_option( WPPB_FUNCTIONS, $output_functions );
-			update_option( WPPB_TEMPLATES, $templates );
-		}
+		$this->data_storage();
 		?>
 <div class="wrap"><?php
 	// Create screen icon by heading
@@ -636,9 +686,11 @@ class Pressabl_Admin {
 
 		</div>
 	<p class="submit" style="float:left;margin:25px 0 0 0;">
-		<input type="submit" class="button-primary" value="<?php _e( 'Save template', 'pixopoint_theme_editor' ); ?>" />
-	</p>
 
+		<input type="submit" class="button-primary" name="publish" value="<?php _e( 'Publish', 'pixopoint_theme_editor' ); ?>" />
+		<input type="submit" class="button button-highlighted" name="draft" value="<?php _e( 'Save Draft', 'pixopoint_theme_editor' ); ?>" />
+		<a class="button" href="<?php echo home_url( '/?preview=true' ); ?>"><?php _e( 'Preview', 'pixopoint_theme_editor' ); ?></a>
+	</p>
 	<input type="hidden" name="<?php echo WPPB_TEMPLATES; ?>[version]" value="<?php echo get_wppb_option( 'version' ) + 1; ?>" />
 </form>
 </div><?php

@@ -37,6 +37,20 @@ class Pressabl {
 		add_action( 'wp_print_styles', array( $this, 'settings_css' ) );
 		add_action( 'wp_print_styles', array( $this, 'deregister_css' ), 100 );
 		add_action( 'wp_footer', array( $this, 'inline_page_stats' ) );
+
+		// Create custom post type for storing templates
+		$args = array(
+			'labels' 				=> array(
+				'name' 					=> 'Pressabl templates', // Name
+				'singular_name' 		=> 'pressabl', // Singular Name
+			),
+			'public' 				=> false,
+			'exclude_from_search' 	=> true,
+			'publicly_queryable'	=> false,
+			'capability_type' 		=> 'post',
+		);
+		register_post_type( 'pressabl', $args );
+		
 	}
 	
 	/**
@@ -117,18 +131,18 @@ class Pressabl {
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 */
 	public function settings_scripts() {
-	
+
 		// Bail out now if in admin panel or on login page
 		if ( is_admin() OR strstr( $_SERVER['REQUEST_URI'], 'wp-login.php' ) )
 			return;
-	
+
 		echo '<!--[if lt IE 9]><script src="' . get_template_directory_uri() . '/scripts/html5.js" type="text/javascript"></script><![endif]-->';
-		
+
 		// Comments
 		if ( is_singular() )
 			wp_enqueue_script( 'comment-reply' );
 	}
-	
+
 	/**
 	 * Adds sf-menu to wp_nav_menu()
 	 * Strips out wrapper tags so they can be added by hand via the templates
@@ -164,7 +178,7 @@ class Pressabl {
 	 * @return void
 	 */
 	public function settings_widgets_init() {
-	
+
 		// Load widget settings
 		$widgets = (array) get_wppb_option( 'widgets' );
 

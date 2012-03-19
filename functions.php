@@ -60,15 +60,8 @@ define( 'WPPB_NAME_SPLIT_START', '[----' ); // Strings used to descriminate betw
 define( 'WPPB_NAME_SPLIT_END', "----]\n" ); // Strings used to descriminate between differents bits in exported/imported files
 define( 'WPPB_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
 define( 'WPPB_VERSION', '1.0.14' ); // Version of WP Paintbrush used
+define( 'PRESSABL_REVISIONS', 3 ); // Number of revisions to store
 
-/**
- * Set widget suffixes
- * Currently uses numbers, but could easily incorporate text instead
- * @since 0.1
- */
-function wppb_settings_widgets_array() {
-	return array( 1, 2, 3, 4, 5, 6 );
-}
 
 /**
  * Get options function
@@ -79,14 +72,30 @@ function wppb_settings_widgets_array() {
  * @since 0.1
  * @return array or string
  */
-function get_wppb_option( $option ) {
+function get_wppb_option( $option, $revision = 1 ) {
 
-	// Load up core functions (this contains the data used on the front-end of the site)
-	$options = get_option( WPPB_FUNCTIONS );
+	// If requesting most recent revision, then load directly from option (fastest)
+	if ( $revision == 1 )
+		$options = get_option( WPPB_FUNCTIONS );
 
-	// If the option requested doesn't exist, then try the templates instead
-	if ( empty( $options[$option] ) )
-		$options = get_option( WPPB_TEMPLATES );
+	// If required option not found, then request from posts table (slower, but not used on every page load)
+	if ( empty( $options[$option] ) ) {
+
+		// Grabbing post data from DB
+		$args = array(
+			'post_type'    => 'pressabl',
+			'numberposts'  => $revision,
+		);
+		$posts = get_posts( $args ); // Grab posts as array
+		$post = $posts[$revision-1]; // Select the desired revision
+		$content = $post->post_content; // Grab post content
+		$content = unserialize( $content ); // Unserialize the array
+		$options = $content['primary'];
+
+		if ( empty( $options[$option] ) )
+			$options = $content['secondary'];
+
+	}
 
 	// Choose which bit to return
 	if ( isset( $options[$option] ) )
