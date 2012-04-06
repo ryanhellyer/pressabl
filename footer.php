@@ -1,8 +1,8 @@
 <?php
 /**
  * @package WordPress
- * @subpackage WP Paintbrush
- * @since WP Paintbrush 0.1
+ * @subpackage Pressabl
+ * @since Pressabl 0.1
  */
 ?>
 

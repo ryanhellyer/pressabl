@@ -16,7 +16,7 @@
  * @since 1.0
  */
 class Pressabl {
-	
+
 	/**
 	 * Constructor
 	 * Add methods to appropriate hooks and filters
@@ -26,33 +26,47 @@ class Pressabl {
 		add_action( 'after_setup_theme', array( $this, 'post_thumbnails' ) );
 		add_action( 'init', array( $this, 'fallback_css' ) );
 		add_action( 'init', array( $this, 'settings_setup' ) );
-		add_filter( 'gallery_style', array( $this, 'settings_remove_gallery_css' ) );
-		add_filter( 'wp_title', array( $this, 'title' ), 1 );
 		add_action( 'wp_print_scripts', array( $this, 'settings_scripts' ) );
-		add_filter( 'wp_nav_menu', array( $this, 'menufilter' ) );
-		add_filter( 'wp_page_menu', array( $this, 'menufilter' ) );
 		add_action( 'widgets_init', array( $this, 'settings_widgets_init' ) );
 		add_action( 'wp_head', array( $this, 'settings_head' ) );	
-		add_filter( 'wppb_template_filter', array( $this, 'template_load' ) );
 		add_action( 'wp_print_styles', array( $this, 'settings_css' ) );
 		add_action( 'wp_print_styles', array( $this, 'deregister_css' ), 100 );
 		add_action( 'wp_footer', array( $this, 'inline_page_stats' ) );
+		add_action( 'init', array( $this, 'register_post_type' ) );
 
-		// Create custom post type for storing templates
-		$args = array(
-			'labels' 				=> array(
-				'name' 					=> 'Pressabl templates', // Name
-				'singular_name' 		=> 'pressabl', // Singular Name
-			),
-			'public' 				=> false,
-			'exclude_from_search' 	=> true,
-			'publicly_queryable'	=> false,
-			'capability_type' 		=> 'post',
-		);
-		register_post_type( 'pressabl', $args );
+		add_filter( 'gallery_style', array( $this, 'settings_remove_gallery_css' ) );
+		add_filter( 'wp_title', array( $this, 'title' ), 1 );
+		add_filter( 'wp_nav_menu', array( $this, 'menufilter' ) );
+		add_filter( 'wp_page_menu', array( $this, 'menufilter' ) );
+		add_filter( 'wppb_template_filter', array( $this, 'template_load' ) );
 		
 	}
 	
+	/**
+	 * Create custom post type for storing templates
+	 *
+	 * @since 1.0
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 * @return void
+	 */
+	public function register_post_type() {
+
+		// Set arguments for custom post-type
+		$args = array(
+			'labels'              => array(
+				'name'                 => 'Pressabl templates', // Name
+				'singular_name'        => 'pressabl', // Singular Name
+			),
+			'public'              => true,
+			'exclude_from_search' => true,
+			'publicly_queryable'  => false,
+			'capability_type' 	  => 'post',
+		);
+
+		// Register custom post-type
+		register_post_type( 'pressabl', $args );
+	}
+
 	/**
 	 * Remove inline styles printed when the gallery shortcode is used.
 	 * Code borrowed from TwentyTen theme
@@ -208,7 +222,7 @@ class Pressabl {
 	public function settings_head() {
 		echo "<link rel='pingback' href='" . get_bloginfo( 'pingback_url' ) . "' />\n";
 		echo "<link rel='author' href='" . get_template_directory_uri() . "/humans.txt' />\n";
-		echo "\n<!-- Theme Generated via WP Paintbrush ... http://wppaintbrush.com/ -->\n\n";
+		echo "\n<!-- Theme Generated via Pressabl ... http://pressabl.com/ -->\n\n";
 	}
 	
 	/**
@@ -365,15 +379,6 @@ class Pressabl {
 	 * @return string
 	 */
 	private function template_choice() {
-		if ( is_front_page() ) {
-			echo 'front page';
-		}
-		if ( is_page() ) {
-			echo 'page';
-		}
-		if ( is_home() ) {
-			echo 'home';
-		}
 		if ( is_front_page() && '' != get_wppb_option( 'front_page' ) )
 			return 'front_page';
 		elseif ( is_home() && '' != get_wppb_option( 'home' ) )

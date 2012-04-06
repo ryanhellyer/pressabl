@@ -1,8 +1,8 @@
 <?php
 /**
  * @package WordPress
- * @subpackage WP Paintbrush theme
- * @since WP Paintbrush 0.1
+ * @subpackage Pressabl theme
+ * @since Pressabl 0.1
  *
  * Functions
  */
@@ -15,8 +15,8 @@ if ( !defined( 'ABSPATH' ) )
 	die( 'Eh! What you doin in here?' );
 
 /**
- * Load theme specific functions
- * Some files not loaded unless in admin panel, or editing pane loaded
+ * Load required files
+ * Some files not loaded unless in admin panel
  * @since 0.1
  */
 require( get_template_directory() . '/class-pressabl.php' ); // Loading primary Pressabl class
@@ -26,8 +26,7 @@ if ( is_admin() ) {
 	require( get_template_directory() . '/theme-update-checker.php' ); // Load theme update checker - needs loaded only once due to being used in child themes
 	require( get_template_directory() . '/csstidy/class.csstidy.php' ); // Loading CSS Tidy
 	require( get_template_directory() . '/csstidy/index.php' ); // Loading CSS Tidy extension
-	require( get_template_directory() . '/admin_pages.php' ); // Admin specific functions
-	require( get_template_directory() . '/admin_options.php' ); // Admin options functions
+	require( get_template_directory() . '/class-pixopoint-template-editor.php' ); // Admin specific functions
 }
 
 /**
@@ -38,7 +37,7 @@ $pxp_templating = new PixoPoint_Templating_Framework(); // Templating framework
 $pressabl = new Pressabl(); // Pressabl theme
 if ( is_admin() ) {
 	$wppb_update_checker = new ThemeUpdateChecker( 'wppaintbrush', 'http://wppaintbrush.com/?pixopoint_autoupdate_api=wppaintbrush' ); // Update checker
-	$pressabl_admin = new Pressabl_Admin;
+	$pxp_editor = new PixoPoint_Template_Editor;
 }
 
 /* Set Constants
@@ -51,13 +50,8 @@ if ( !defined( 'WPPB_TEMPLATES' ) )
 if ( !defined( 'WPPB_FUNCTIONS' ) )
 	define( 'WPPB_FUNCTIONS', 'wppb_functions' ); // Label for option used to store template code in database
 define( 'PIXOPOINT_SETTINGS_COPYRIGHT', 'Theme by <a href="http://wppaintbrush.com/">WPPaintbrush.com</a>' ); // Copyright constant
-define( 'WPPB_ADMIN_URL', get_template_directory_uri() . '/admin' ); // Admin directory URL
-define( 'WPPB_TEMPLATES_LABEL', 'Themes' ); // Decides what label to give the templates page (for theme selection page - in development as an addon plugin)
 define( 'WPPB_STORAGE_FOLDER', 'wppb_storage' );
 define( 'WPPB_STORAGE_IMAGES_FOLDER', $pressabl->storage_folder() . '/images/' );
-define( 'WPPB_BLOCK_SPLITTER', "/* PixoPoint Template option */\n" ); // Strings used to descriminate between differents bits in exported/imported files
-define( 'WPPB_NAME_SPLIT_START', '[----' ); // Strings used to descriminate between differents bits in exported/imported files
-define( 'WPPB_NAME_SPLIT_END', "----]\n" ); // Strings used to descriminate between differents bits in exported/imported files
 define( 'WPPB_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
 define( 'WPPB_VERSION', '1.0.14' ); // Version of WP Paintbrush used
 define( 'PRESSABL_REVISIONS', 3 ); // Number of revisions to store
@@ -67,6 +61,7 @@ define( 'PRESSABL_REVISIONS', 3 ); // Number of revisions to store
  * Get options function
  *
  * First attempts to load from functions, then defaults to templates
+ * Initially loads option, but if preview set, revision set or if the option is not found, then defaults to grabbing a post
  *
  * @author Ryan Hellyer
  * @since 0.1
@@ -78,6 +73,20 @@ function get_wppb_option( $option, $revision = 1 ) {
 	if ( $revision == 1 )
 		$options = get_option( WPPB_FUNCTIONS );
 
+	// Set post status, based on whether user has chosen to view a preview or not
+	if ( isset( $_GET['pressabl-preview'] ) ) {
+		$post_status = 'draft'; // Since this is a preview we use the draft posts
+		unset( $options ); // Unset $options as need to grab from posts instead
+	}
+	else
+		$post_status = 'publish'; // Since not previewing, we use published posts
+
+	// Allow to view older versions via preview URL
+	if ( isset( $_GET['pressabl-revision'] ) ) {
+		$revision = (int) $_GET['pressabl-revision'];
+		unset( $options ); // Unset $options as need to grab from posts instead
+	}
+
 	// If required option not found, then request from posts table (slower, but not used on every page load)
 	if ( empty( $options[$option] ) ) {
 
@@ -85,12 +94,13 @@ function get_wppb_option( $option, $revision = 1 ) {
 		$args = array(
 			'post_type'    => 'pressabl',
 			'numberposts'  => $revision,
+			'post_status'  => $post_status,
 		);
-		$posts = get_posts( $args ); // Grab posts as array
-		$post = $posts[$revision-1]; // Select the desired revision
+		$posts   = get_posts( $args ); // Grab posts as array
+		$post    = $posts[$revision-1]; // Select the desired revision (substract one as array starts at zero)
 		$content = $post->post_content; // Grab post content
 		$content = unserialize( $content ); // Unserialize the array
-		$options = $content['primary'];
+		$options = $content['primary']; // Grab primary data (most commonly utilized data)
 
 		if ( empty( $options[$option] ) )
 			$options = $content['secondary'];

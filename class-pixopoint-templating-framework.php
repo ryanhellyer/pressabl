@@ -24,13 +24,6 @@
 
 
 /**
- * Do not continue processing since file was called directly
- * @since 0.1
- */
-if ( !defined( 'ABSPATH' ) )
-	return;
-
-/**
  * Primary class used to load the templating framework
  * Adds shortcodes for use within templates
  * 
