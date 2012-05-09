@@ -19,14 +19,14 @@ if ( !defined( 'ABSPATH' ) )
  * Some files not loaded unless in admin panel
  * @since 0.1
  */
-require( get_template_directory() . '/class-pressabl.php' ); // Loading primary Pressabl class
-require( get_template_directory() . '/class-pixopoint-templating-framework.php' ); // Loading PixoPoint templating framework
-require( get_template_directory() . '/class-breadcrumb-navigation-xt.php' ); // Load the breadcrumb class
+require( get_template_directory() . '/inc/class-pressabl.php' ); // Loading primary Pressabl class
+require( get_template_directory() . '/inc/class-pixopoint-templating-framework.php' ); // Loading PixoPoint templating framework
+require( get_template_directory() . '/inc/class-breadcrumb-navigation-xt.php' ); // Load the breadcrumb class
 if ( is_admin() ) {
-	require( get_template_directory() . '/theme-update-checker.php' ); // Load theme update checker - needs loaded only once due to being used in child themes
-	require( get_template_directory() . '/csstidy/class.csstidy.php' ); // Loading CSS Tidy
-	require( get_template_directory() . '/csstidy/index.php' ); // Loading CSS Tidy extension
-	require( get_template_directory() . '/class-pixopoint-template-editor.php' ); // Admin specific functions
+	require( get_template_directory() . '/inc/class-pixopoint-template-editor.php' ); // Admin specific functions
+	require( get_template_directory() . '/inc/theme-update-checker.php' ); // Load theme update checker - needs loaded only once due to being used in child themes
+	require( get_template_directory() . '/inc/csstidy/class.csstidy.php' ); // Loading CSS Tidy
+	require( get_template_directory() . '/inc/csstidy/index.php' ); // Loading CSS Tidy extension
 }
 
 /**
@@ -41,7 +41,10 @@ if ( is_admin() ) {
 }
 
 /* Set Constants
+ * Set after instantiation of classes due to the use of objects within the constants
+ *
  * @since 0.8.2
+ * @author Ryan Hellyer <ryan@pixopoint.com>
  */
 if ( !defined( 'WPPB_SETTINGS' ) )
 	define( 'WPPB_SETTINGS', 'wppb_settings' ); // Label for option used to store template code in database
@@ -54,8 +57,7 @@ define( 'WPPB_STORAGE_FOLDER', 'wppb_storage' );
 define( 'WPPB_STORAGE_IMAGES_FOLDER', $pressabl->storage_folder() . '/images/' );
 define( 'WPPB_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
 define( 'WPPB_VERSION', '1.0.14' ); // Version of WP Paintbrush used
-define( 'PRESSABL_REVISIONS', 3 ); // Number of revisions to store
-
+define( 'PRESSABL_REVISIONS', 6 ); // Number of revisions to store
 
 /**
  * Get options function
@@ -74,8 +76,12 @@ function get_wppb_option( $option, $revision = 1 ) {
 		$options = get_option( WPPB_FUNCTIONS );
 
 	// Set post status, based on whether user has chosen to view a preview or not
-	if ( isset( $_GET['pressabl-preview'] ) ) {
-		$post_status = 'draft'; // Since this is a preview we use the draft posts
+	if ( isset( $_GET['pressabl-save'] ) || isset( $_GET['pressabl-preview'] ) ) {
+		if ( 'draft' == $_GET['pressabl-save'] )
+			$post_status = 'draft'; // Since this is a preview we use the draft posts
+		else
+			$post_status = 'publish'; // Since not previewing, we use published posts
+
 		unset( $options ); // Unset $options as need to grab from posts instead
 	}
 	else
