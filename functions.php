@@ -20,10 +20,12 @@ if ( !defined( 'ABSPATH' ) )
  * @since 0.1
  */
 require( get_template_directory() . '/inc/class-pressabl.php' ); // Loading primary Pressabl class
-require( get_template_directory() . '/inc/class-pixopoint-templating-framework.php' ); // Loading PixoPoint templating framework
+require( get_template_directory() . '/inc/class-pressabl-css.php' ); // Loading primary Pressabl class
+require( get_template_directory() . '/inc/class-pressabl-filter-wordpress.php' ); // Loading primary Pressabl class
+require( get_template_directory() . '/inc/class-pressabl-templating-framework.php' ); // Loading PixoPoint templating framework
 require( get_template_directory() . '/inc/class-breadcrumb-navigation-xt.php' ); // Load the breadcrumb class
 if ( is_admin() ) {
-	require( get_template_directory() . '/inc/class-pixopoint-template-editor.php' ); // Admin specific functions
+	require( get_template_directory() . '/inc/class-pressabl-template-editor.php' ); // Admin specific functions
 	require( get_template_directory() . '/inc/theme-update-checker.php' ); // Load theme update checker - needs loaded only once due to being used in child themes
 	require( get_template_directory() . '/inc/csstidy/class.csstidy.php' ); // Loading CSS Tidy
 	require( get_template_directory() . '/inc/csstidy/index.php' ); // Loading CSS Tidy extension
@@ -33,11 +35,13 @@ if ( is_admin() ) {
  * Instantiate classes
  * @since 1.0
  */
-$pxp_templating = new PixoPoint_Templating_Framework(); // Templating framework
 $pressabl = new Pressabl(); // Pressabl theme
+new Pressabl_Templating_Framework(); // Templating framework
+new Pressabl_CSS();
+new Pressabl_Filter_WordPress();
 if ( is_admin() ) {
-	$wppb_update_checker = new ThemeUpdateChecker( 'wppaintbrush', 'http://wppaintbrush.com/?pixopoint_autoupdate_api=wppaintbrush' ); // Update checker
-	$pxp_editor = new PixoPoint_Template_Editor;
+	new ThemeUpdateChecker( 'pressabl', 'http://pressabl.com/?update=theme' ); // Update checker
+	new Pressabl_Template_Editor;
 }
 
 /* Set Constants
@@ -46,17 +50,13 @@ if ( is_admin() ) {
  * @since 0.8.2
  * @author Ryan Hellyer <ryan@pixopoint.com>
  */
-if ( !defined( 'WPPB_SETTINGS' ) )
-	define( 'WPPB_SETTINGS', 'wppb_settings' ); // Label for option used to store template code in database
-if ( !defined( 'WPPB_TEMPLATES' ) )
-	define( 'WPPB_TEMPLATES', 'wppb_templates' ); // Label for option used to store template code in database
-if ( !defined( 'WPPB_FUNCTIONS' ) )
-	define( 'WPPB_FUNCTIONS', 'wppb_functions' ); // Label for option used to store template code in database
+if ( !defined( 'PRESSABL_TEMPLATES' ) )
+	define( 'PRESSABL_TEMPLATES', 'wppb_templates' ); // Label for option used to store template code in database
+if ( !defined( 'PRESSABL_FUNCTIONS' ) )
+	define( 'PRESSABL_FUNCTIONS', 'wppb_functions' ); // Label for option used to store template code in database
 define( 'PIXOPOINT_SETTINGS_COPYRIGHT', 'Theme by <a href="http://wppaintbrush.com/">WPPaintbrush.com</a>' ); // Copyright constant
-define( 'WPPB_STORAGE_FOLDER', 'wppb_storage' );
-define( 'WPPB_STORAGE_IMAGES_FOLDER', $pressabl->storage_folder() . '/images/' );
-define( 'WPPB_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
-define( 'WPPB_VERSION', '1.0.14' ); // Version of WP Paintbrush used
+define( 'PRESSABL_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
+define( 'PRESSABL_VERSION', '1.0' ); // Version of WP Paintbrush used
 define( 'PRESSABL_REVISIONS', 6 ); // Number of revisions to store
 
 /**
@@ -69,11 +69,11 @@ define( 'PRESSABL_REVISIONS', 6 ); // Number of revisions to store
  * @since 0.1
  * @return array or string
  */
-function get_wppb_option( $option, $revision = 1 ) {
+function get_pressabl_option( $option, $revision = 1 ) {
 
 	// If requesting most recent revision, then load directly from option (fastest)
 	if ( $revision == 1 )
-		$options = get_option( WPPB_FUNCTIONS );
+		$options = get_option( PRESSABL_FUNCTIONS );
 
 	// Set post status, based on whether user has chosen to view a preview or not
 	if ( isset( $_GET['pressabl-save'] ) || isset( $_GET['pressabl-preview'] ) ) {

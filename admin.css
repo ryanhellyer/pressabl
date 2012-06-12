@@ -123,6 +123,22 @@ li#pressabl-includes-options a:hover span,
 li#pressabl-includes-options.ui-tabs-selected span {
 	background-position: 0 -622px !important;
 }
+/* Main */
+li#pressabl-index-options span {
+	background-position: 0 -289px !important;
+}
+li#pressabl-index-options a:hover span, 
+li#pressabl-index-options.ui-tabs-selected span {
+	background-position: 0 -257px !important;
+}
+/* Blog */
+li#pressabl-blog-options span {
+	background-position: 0 -165px !important;
+}
+li#pressabl-blog-options a:hover span, 
+li#pressabl-blog-options.ui-tabs-selected span {
+	background-position: 0 -131px !important;
+}
 /* Archive */
 li#pressabl-archives-options span {
 	background-position: 0 -711px !important;
