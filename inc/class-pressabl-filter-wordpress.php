@@ -40,58 +40,57 @@ class Pressabl_Filter_WordPress extends Pressabl {
 	 * Print the title tag based on what is being viewed.
 	 * 
 	 * @since 0.1
-	 * @todo Remove need for output buffering (only used as stopgap to utilise original title code until new improved filter is ready)
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 * @return string
 	 */
 	public function title() {
-		ob_start();
+		$title = '';
+	
 		// Single post
 		if ( is_single() ) {
-			single_post_title();
-			echo ' | ';
-			bloginfo( 'name' );
+			$title .= single_post_title( '', false );
+			$title .= ' | ';
+			$title .= get_bloginfo( 'name' );
 		}
-
+	
 		// Home page
 		elseif ( is_home() ) {
-			bloginfo( 'name' );
-			echo ' | ';
-			bloginfo( 'description' );
+			$title .= get_bloginfo( 'name' );
+			$title .= ' | ';
+			$title .= get_bloginfo( 'description' );
 			if ( get_query_var( 'paged' ) )
-				echo ' | Page ' . get_query_var( 'paged' );
+				$title .= ' | ' . __( 'Page', 'pressabl' ) . ' ' . get_query_var( 'paged' );
 		}
-
+	
 		// Static page
 		elseif ( is_page() ) {
-			single_post_title( '' );
-			echo ' | ';
-			bloginfo( 'name' );
+			$title .= single_post_title( '', false );
+			$title .= ' | ';
+			$title .= get_bloginfo( 'name' );
 		}
-
+	
 		// Search page
 		elseif ( is_search() ) {
-			bloginfo( 'name' );
-			echo ' | Search results for ' . esc_html( $s ); 
+			$title .= get_bloginfo( 'name' );
+			$title .= ' | Search results for ' . esc_html( $s ); 
 			if ( get_query_var( 'paged' ) )
-				echo ' | Page ' . get_query_var( 'paged' );
+				$title .= ' | ' . __( 'Page', 'pressabl' ) . ' ' . get_query_var( 'paged' );
 		}
-
+	
 		// 404 not found error
 		elseif ( is_404() ) {
-			bloginfo( 'name' );
-			echo ' | Not Found';
+			$title .= get_bloginfo( 'name' );
+			$title .= ' | ' . __( 'Not Found', 'pressabl' );
 		}
-
+	
 		// Anything else
 		else {
-			bloginfo( 'name' );
-			wp_title( '|' );
+			$title .= get_bloginfo( 'name' );
+			$title .= wp_title( '|', false );
 			if ( get_query_var( 'paged' ) )
-				echo ' | Page ' . get_query_var( 'paged' );
+				$title .= ' | ' . __( 'Page', 'pressabl' ) . ' ' . get_query_var( 'paged' );
 		}
-		$title = ob_get_contents();
-		ob_end_clean();
+
 		return $title;
 	}
 
