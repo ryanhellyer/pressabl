@@ -16,7 +16,7 @@
  * @author Ryan Hellyer <ryan@pixopoint.com>
  * @since 1.0
  */
-class Pressabl_Template_Editor {
+class Pressabl_Template_Editor extends Pressabl {
 
 	/**
 	 * Constructor
@@ -392,7 +392,7 @@ class Pressabl_Template_Editor {
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 */
 	function register_theme() {
-//return;
+return;
 
 		// Saving data to file
 		// Grabbing post data from DB
@@ -522,7 +522,7 @@ class Pressabl_Template_Editor {
 				<div class="tab-inner">
 					<h3><?php _e( 'CSS styling code', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea id="code" name="<?php echo PRESSABL_TEMPLATES; ?>[css]" value=""><?php echo get_pressabl_option( 'css' ); ?></textarea>
+						<textarea id="code" name="<?php echo PRESSABL_TEMPLATES; ?>[css]" value=""><?php echo $this->get_option( 'css' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -558,7 +558,7 @@ class Pressabl_Template_Editor {
 						<tbody class="plugins"><?php
 
 					// Load thumbnail settings (for add_image_size();)
-					$thumbs = (array) get_pressabl_option( 'thumbs' );
+					$thumbs = (array) $this->get_option( 'thumbs' );
 
 					// Set a blank array, to ensure that at least one blank item is present (allows people to add more thumbnails later)
 					$thumbnails_extra = array(
@@ -631,7 +631,7 @@ class Pressabl_Template_Editor {
 						<tbody class="plugins"><?php
 
 					// Load thumbnail settings (for add_image_size();)
-					$widgets = (array) get_pressabl_option( 'widgets' );
+					$widgets = (array) $this->get_option( 'widgets' );
 
 					// Set a blank array, to ensure that at least one blank item is present (allows people to add more thumbnails later)
 					$widgets_extra = array(
@@ -691,7 +691,7 @@ class Pressabl_Template_Editor {
 						<tbody class="plugins"><?php
 
 					// Load thumbnail settings (for add_image_size();)
-					$menus = (array) get_pressabl_option( 'menus' );
+					$menus = (array) $this->get_option( 'menus' );
 
 					// Set a blank array, to ensure that at least one blank item is present (allows people to add more thumbnails later)
 					$menus_extra = array(
@@ -728,19 +728,19 @@ class Pressabl_Template_Editor {
 					<h3><?php _e( 'Header template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[header]" value=""><?php echo get_pressabl_option( 'header' ); ?></textarea>
+; ?>[header]" value=""><?php echo $this->get_option( 'header' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Footer template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[footer]" value=""><?php echo get_pressabl_option( 'footer' ); ?></textarea>
+; ?>[footer]" value=""><?php echo $this->get_option( 'footer' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Comments', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[comments]" value=""><?php echo get_pressabl_option( 'comments' ); ?></textarea>
+; ?>[comments]" value=""><?php echo $this->get_option( 'comments' ); ?></textarea>
 					</p>
 	
 				</div>
@@ -751,12 +751,12 @@ class Pressabl_Template_Editor {
 					<h3><?php _e( 'Index page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[index]" value=""><?php echo get_pressabl_option( 'index' ); ?></textarea>
+; ?>[index]" value=""><?php echo $this->get_option( 'index' ); ?></textarea>
 					</p>
 					<h3><?php _e( 'Front page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[front_page]" value=""><?php echo get_pressabl_option( 'front_page' ); ?></textarea>
+; ?>[front_page]" value=""><?php echo $this->get_option( 'front_page' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -766,20 +766,20 @@ class Pressabl_Template_Editor {
 					<h3><?php _e( 'Default page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[page]" value=""><?php echo get_pressabl_option( 'page' ); ?></textarea>
+; ?>[page]" value=""><?php echo $this->get_option( 'page' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Page template 1', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[page_template_1]" value=""><?php echo get_pressabl_option( 'page_template_1' ); ?></textarea>
+; ?>[page_template_1]" value=""><?php echo $this->get_option( 'page_template_1' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Page template 2', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
 ; ?><?php echo PRESSABL_TEMPLATES
-; ?>[page_template_2]" value=""><?php echo get_pressabl_option( 'page_template_2' ); ?></textarea>
+; ?>[page_template_2]" value=""><?php echo $this->get_option( 'page_template_2' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -789,12 +789,12 @@ class Pressabl_Template_Editor {
 					<h3><?php _e( 'Single post template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[single]" value=""><?php echo get_pressabl_option( 'single' ); ?></textarea>
+; ?>[single]" value=""><?php echo $this->get_option( 'single' ); ?></textarea>
 					</p>
 					<h3><?php _e( 'Blog page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[home]" value=""><?php echo get_pressabl_option( 'home' ); ?></textarea>
+; ?>[home]" value=""><?php echo $this->get_option( 'home' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -804,7 +804,7 @@ class Pressabl_Template_Editor {
 					<h3><?php _e( 'Archive template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
 						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[archive]" value=""><?php echo get_pressabl_option( 'archive' ); ?></textarea>
+; ?>[archive]" value=""><?php echo $this->get_option( 'archive' ); ?></textarea>
 					</p>
 				</div>
 			</div>

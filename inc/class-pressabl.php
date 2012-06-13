@@ -28,6 +28,70 @@ class Pressabl {
 	}
 
 	/**
+	 * Get options function
+	 *
+	 * First attempts to load from functions, then defaults to templates
+	 * Initially loads option, but if preview set, revision set or if the option is not found, then defaults to grabbing a post
+	 *
+	 * @author Ryan Hellyer
+	 * @since 0.1
+	 * @return array or string
+	 */
+	function get_option( $option, $revision = 1 ) {
+	
+		// If requesting most recent revision, then load directly from option (fastest)
+		if ( $revision == 1 )
+			$options = get_option( PRESSABL_FUNCTIONS );
+	
+		// Set post status, based on whether user has chosen to view a preview or not
+		if ( isset( $_GET['pressabl-preview'] ) ) {
+			$post_status = 'publish'; // Since not previewing, we use published posts
+	
+			unset( $options ); // Unset $options as need to grab from posts instead
+		}
+		elseif ( isset( $_GET['pressabl-save'] ) ) {
+			if ( 'draft' == $_GET['pressabl-save'] )
+				$post_status = 'draft'; // Since this is a preview we use the draft posts
+			else
+				$post_status = 'publish'; // Since not previewing, we use published posts
+	
+			unset( $options ); // Unset $options as need to grab from posts instead
+		}
+		else
+			$post_status = 'publish'; // Since not previewing, we use published posts
+	
+		// Allow to view older versions via preview URL
+		if ( isset( $_GET['pressabl-revision'] ) ) {
+			$revision = (int) $_GET['pressabl-revision'];
+			unset( $options ); // Unset $options as need to grab from posts instead
+		}
+	
+		// If required option not found, then request from posts table (slower, but not used on every page load)
+		if ( empty( $options[$option] ) ) {
+	
+			// Grabbing post data from DB
+			$args = array(
+				'post_type'    => 'pressabl',
+				'numberposts'  => $revision,
+				'post_status'  => $post_status,
+			);
+			$posts   = get_posts( $args ); // Grab posts as array
+			$post    = $posts[$revision-1]; // Select the desired revision (substract one as array starts at zero)
+			$content = $post->post_content; // Grab post content
+			$content = unserialize( $content ); // Unserialize the array
+			$options = $content['primary']; // Grab primary data (most commonly utilized data)
+	
+			if ( empty( $options[$option] ) )
+				$options = $content['secondary'];
+	
+		}
+	
+		// Choose which bit to return
+		if ( isset( $options[$option] ) )
+			return $options[$option];
+	}
+
+	/**
 	 * Create custom post type for storing templates
 	 *
 	 * @since 1.0
@@ -78,7 +142,7 @@ class Pressabl {
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 */
 	public function register_menus() {
-		$menus = (array) get_pressabl_option( 'menus' ); // Grab which menus to be loaded from DB
+		$menus = (array) $this->get_option( 'menus' ); // Grab which menus to be loaded from DB
 		foreach ( $menus as $key => $menu ) {
 			register_nav_menu( 'menu' . $key, $menu['name_menu'] );
 		}
@@ -93,7 +157,7 @@ class Pressabl {
 	public function register_widgets() {
 
 		// Load widget settings
-		$widgets = (array) get_pressabl_option( 'widgets' );
+		$widgets = (array) $this->get_option( 'widgets' );
 
 		foreach ( $widgets as $key => $widget ) {
 
@@ -182,9 +246,9 @@ class Pressabl {
 		 * The header and footer calls are replaced with their corresponding code
 		 * Shortcodes are parsed to automagically turn the templates into usable code
 		 */
-		$template = get_pressabl_option( $this->template_choice() ); // Load appropriate template
-		$template = str_replace( '[get_header]', get_pressabl_option( 'header' ), $template ); // Replacing header call with real code 
-		$template = str_replace( '[get_footer]', get_pressabl_option( 'footer' ), $template ); // Replacing footer call with real code
+		$template = $this->get_option( $this->template_choice() ); // Load appropriate template
+		$template = str_replace( '[get_header]', $this->get_option( 'header' ), $template ); // Replacing header call with real code 
+		$template = str_replace( '[get_footer]', $this->get_option( 'footer' ), $template ); // Replacing footer call with real code
 		$template = do_shortcode( $template ); // Creating content of shortcodes
 
 		/*
@@ -202,7 +266,7 @@ class Pressabl {
 		get_footer();
 
 	}
-	
+
 	/**
 	 * Grab storage folder
 	 * 
@@ -227,19 +291,19 @@ class Pressabl {
 	 * @return string
 	 */
 	private function template_choice() {
-		if ( is_front_page() && '' != get_pressabl_option( 'front_page' ) )
+		if ( is_front_page() && '' != $this->get_option( 'front_page' ) )
 			return 'front_page';
-		elseif ( is_home() && '' != get_pressabl_option( 'home' ) )
+		elseif ( is_home() && '' != $this->get_option( 'home' ) )
 			return 'home';
 		elseif ( is_page_template( 'page-template-1.php' ) )
 			return 'page-template-1';
 		elseif ( is_page_template( 'page-template-2.php' ) )
 			return 'page-template-2';
-		elseif ( is_page() && '' != get_pressabl_option( 'page' ) )
+		elseif ( is_page() && '' != $this->get_option( 'page' ) )
 			return 'page';
-		elseif ( is_single() && '' != get_pressabl_option( 'single' ) )
+		elseif ( is_single() && '' != $this->get_option( 'single' ) )
 			return 'single';
-		elseif ( is_archive() && '' != get_pressabl_option( 'archive' ) )
+		elseif ( is_archive() && '' != $this->get_option( 'archive' ) )
 			return 'archive';
 		elseif ( is_404() )
 			return 'page';
@@ -254,7 +318,7 @@ class Pressabl {
 	public function post_thumbnails() {
 
 		// Post thumbnails
-		$thumbs = (array) get_pressabl_option( 'thumbs' );
+		$thumbs = (array) $this->get_option( 'thumbs' );
 
 		// Add theme support for post thumbnails (only if a thumbnail is specified)
 		if ( isset( $thumbs['name'] ) )

@@ -44,7 +44,7 @@ class Pressabl_CSS extends Pressabl {
 			return;
 
 		header( 'Content-Type: text/css; charset=' . get_option( 'blog_charset' ) . ''); // Loading correct MIME type
-		echo get_pressabl_option( 'css' );
+		echo $this->get_option( 'css' );
 
 		exit; // Kill execution now since no point in loading rest of WP
 	}
@@ -67,7 +67,7 @@ class Pressabl_CSS extends Pressabl {
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 */
 	public function inline_css() {
-		echo '<style>' . get_pressabl_option( 'css' ) . '</style>';
+		echo '<style>' . $this->get_option( 'css' ) . '</style>';
 	}
 
 }
