@@ -54,7 +54,6 @@ if ( !defined( 'PRESSABL_TEMPLATES' ) )
 	define( 'PRESSABL_TEMPLATES', 'wppb_templates' ); // Label for option used to store template code in database
 if ( !defined( 'PRESSABL_FUNCTIONS' ) )
 	define( 'PRESSABL_FUNCTIONS', 'wppb_functions' ); // Label for option used to store template code in database
-define( 'PIXOPOINT_SETTINGS_COPYRIGHT', 'Theme by <a href="http://wppaintbrush.com/">WPPaintbrush.com</a>' ); // Copyright constant
 define( 'PRESSABL_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
 define( 'PRESSABL_VERSION', '1.0' ); // Version of WP Paintbrush used
 define( 'PRESSABL_REVISIONS', 6 ); // Number of revisions to store
@@ -76,7 +75,12 @@ function get_pressabl_option( $option, $revision = 1 ) {
 		$options = get_option( PRESSABL_FUNCTIONS );
 
 	// Set post status, based on whether user has chosen to view a preview or not
-	if ( isset( $_GET['pressabl-save'] ) || isset( $_GET['pressabl-preview'] ) ) {
+	if ( isset( $_GET['pressabl-preview'] ) ) {
+		$post_status = 'publish'; // Since not previewing, we use published posts
+
+		unset( $options ); // Unset $options as need to grab from posts instead
+	}
+	elseif ( isset( $_GET['pressabl-save'] ) ) {
 		if ( 'draft' == $_GET['pressabl-save'] )
 			$post_status = 'draft'; // Since this is a preview we use the draft posts
 		else
