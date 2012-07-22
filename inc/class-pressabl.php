@@ -33,43 +33,33 @@ class Pressabl {
 	 * First attempts to load from functions, then defaults to templates
 	 * Initially loads option, but if preview set, revision set or if the option is not found, then defaults to grabbing a post
 	 *
-	 * @todo Use transients / object cache instead of option
 	 * @author Ryan Hellyer
 	 * @since 0.1
 	 * @return array or string
 	 */
 	function get_option( $option, $revision = 1 ) {
-	
-		// If requesting most recent revision, then load directly from option (fastest)
-		if ( $revision == 1 )
-			$options = get_option( PRESSABL_FUNCTIONS );
-	
+
 		// Set post status, based on whether user has chosen to view a preview or not
 		if ( isset( $_GET['pressabl-preview'] ) ) {
 			$post_status = 'publish'; // Since not previewing, we use published posts
-	
-			unset( $options ); // Unset $options as need to grab from posts instead
 		}
 		elseif ( isset( $_GET['pressabl-save'] ) ) {
 			if ( 'draft' == $_GET['pressabl-save'] )
 				$post_status = 'draft'; // Since this is a preview we use the draft posts
 			else
 				$post_status = 'publish'; // Since not previewing, we use published posts
-	
-			unset( $options ); // Unset $options as need to grab from posts instead
 		}
 		else
 			$post_status = 'publish'; // Since not previewing, we use published posts
-	
+
 		// Allow to view older versions via preview URL
 		if ( isset( $_GET['pressabl-revision'] ) ) {
 			$revision = (int) $_GET['pressabl-revision'];
-			unset( $options ); // Unset $options as need to grab from posts instead
 		}
-	
-		// If required option not found, then request from posts table (slower, but not used on every page load)
-		if ( empty( $options[$option] ) ) {
-	
+
+		$options[$option] = wp_cache_get( 'pressabl-option-' . $option );
+		if ( false === $options[$option] ) {
+
 			// Grabbing post data from DB
 			$args = array(
 				'post_type'    => 'pressabl',
@@ -81,12 +71,19 @@ class Pressabl {
 			$content = $post->post_content; // Grab post content
 			$content = unserialize( $content ); // Unserialize the array
 			$options = $content['primary']; // Grab primary data (most commonly utilized data)
-	
+
 			if ( empty( $options[$option] ) )
 				$options = $content['secondary'];
-	
+
+			// Cache template (requires persistent object cache, otherwise hauls from post every time)
+			wp_cache_replace(
+				'pressabl-option-' . $option, // Key
+				$options[$option],            // Data to be cached
+				'',                           // Cache group
+				60                            // Time to cache
+			);
 		}
-	
+
 		// Choose which bit to return
 		if ( isset( $options[$option] ) )
 			return $options[$option];
@@ -266,11 +263,12 @@ class Pressabl {
 		);
 		$bits = array();
 		foreach( $sections as $key => $bit ) {
-			$bits[$key] = wp_cache_get( 'pressabl-' . $bit );
-			if ( false === $bits[$key] ) {
+//			$bits[$key] = wp_cache_get( 'pressabl-' . $bit );
+//			if ( false === $bits[$key] ) {
 				$bits[$key] = $this->get_option( $bit );
 
-				// Cache template (requires persistent object cache, otherwise hauls from DB each time)
+/*
+ *				// Cache template (requires persistent object cache, otherwise hauls from DB each time)
 				wp_cache_set(
 					'pressabl-' . $bit,          // Key
 					$bits[$key],                 // Data to be cached
@@ -278,6 +276,7 @@ class Pressabl {
 					PRESSABL_TEMPLATE_CACHE_TIME // Time to cache
 				);
 			}
+			*/
 		}
 
 		/*
