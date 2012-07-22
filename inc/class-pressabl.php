@@ -80,7 +80,7 @@ class Pressabl {
 				'pressabl-option-' . $option, // Key
 				$options[$option],            // Data to be cached
 				'',                           // Cache group
-				60                            // Time to cache
+				PRESSABL_CACHE_TIME           // Time to cache
 			);
 		}
 

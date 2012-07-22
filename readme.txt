@@ -11,11 +11,11 @@ STUFF TO DO:
 3. Add child theme system - including setting up default json encoded files ... register_theme()
 4. Clean up CSS parsing code
 5. process_thumbnails() should not parsed stuff into different format ... need different method for that since also need to use sanitization function for stuff coming from data.tpl file ... ie: data.tpl isn't in same format as stuff direct from <form>. Probably have same problem on wdigets and menus too. Might pay to standardise parsing code across widgets, menus and thumbnails if possible too.
-6. Perhaps replace options with transients and ditch standard wp-cache calls in launch_theme - can then eliminate PRESSABL_TEMPLATE_CACHE_TIME since they'd be ditched at appropriate time anyway
+6. Force flush of cache on saving templates
 7. Add readme.txt FAQ that states that performance problems can be avoided by using persistent object cache
 8. Allow for other page templates ... http://www.wptavern.com/forum/themes-templates/1926-creating-page-templates-via-plugin.html
 9. Allow for automatically added custom post-type templates
-10. 
+10. Remove dead references to update_option() since no data saved in option now
 11. Use WP HTTP API for CSS file
 12. Make sure CSS file uses different version on each edit of it
 
