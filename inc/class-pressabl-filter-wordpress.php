@@ -86,7 +86,6 @@ class Pressabl_Filter_WordPress extends Pressabl {
 		// Anything else
 		else {
 			$title .= get_bloginfo( 'name' );
-			$title .= wp_title( '|', false );
 			if ( get_query_var( 'paged' ) )
 				$title .= ' | ' . __( 'Page', 'pressabl' ) . ' ' . get_query_var( 'paged' );
 		}

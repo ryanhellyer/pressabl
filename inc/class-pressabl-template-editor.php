@@ -727,20 +727,17 @@ return;
 	
 					<h3><?php _e( 'Header template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[header]" value=""><?php echo $this->get_option( 'header' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[header]" value=""><?php echo $this->get_option( 'header' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Footer template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[footer]" value=""><?php echo $this->get_option( 'footer' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[footer]" value=""><?php echo $this->get_option( 'footer' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Comments', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[comments]" value=""><?php echo $this->get_option( 'comments' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[comments]" value=""><?php echo $this->get_option( 'comments' ); ?></textarea>
 					</p>
 	
 				</div>
@@ -750,13 +747,11 @@ return;
 				<div class="tab-inner">
 					<h3><?php _e( 'Index page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[index]" value=""><?php echo $this->get_option( 'index' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[index]" value=""><?php echo $this->get_option( 'index' ); ?></textarea>
 					</p>
 					<h3><?php _e( 'Front page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[front_page]" value=""><?php echo $this->get_option( 'front_page' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[front_page]" value=""><?php echo $this->get_option( 'front_page' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -765,21 +760,17 @@ return;
 				<div class="tab-inner">
 					<h3><?php _e( 'Default page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[page]" value=""><?php echo $this->get_option( 'page' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[page]" value=""><?php echo $this->get_option( 'page' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Page template 1', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[page_template_1]" value=""><?php echo $this->get_option( 'page_template_1' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[page_template_1]" value=""><?php echo $this->get_option( 'page_template_1' ); ?></textarea>
 					</p>
 	
 					<h3><?php _e( 'Page template 2', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper medium">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?><?php echo PRESSABL_TEMPLATES
-; ?>[page_template_2]" value=""><?php echo $this->get_option( 'page_template_2' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?><?php echo PRESSABL_TEMPLATES; ?>[page_template_2]" value=""><?php echo $this->get_option( 'page_template_2' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -788,13 +779,11 @@ return;
 				<div class="tab-inner">
 					<h3><?php _e( 'Single post template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[single]" value=""><?php echo $this->get_option( 'single' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[single]" value=""><?php echo $this->get_option( 'single' ); ?></textarea>
 					</p>
 					<h3><?php _e( 'Blog page template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[home]" value=""><?php echo $this->get_option( 'home' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[home]" value=""><?php echo $this->get_option( 'home' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -803,8 +792,15 @@ return;
 				<div class="tab-inner">
 					<h3><?php _e( 'Archive template', 'pixopoint_theme_editor' ); ?></h3>
 					<p class="textarea-wrapper">
-						<textarea name="<?php echo PRESSABL_TEMPLATES
-; ?>[archive]" value=""><?php echo $this->get_option( 'archive' ); ?></textarea>
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[archive]" value=""><?php echo $this->get_option( 'archive' ); ?></textarea>
+					</p>
+					<h3><?php _e( 'Search template', 'pixopoint_theme_editor' ); ?></h3>
+					<p class="textarea-wrapper">
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[search]" value=""><?php echo $this->get_option( 'search' ); ?></textarea>
+					</p>
+					<h3><?php _e( '404 template', 'pixopoint_theme_editor' ); ?></h3>
+					<p class="textarea-wrapper">
+						<textarea name="<?php echo PRESSABL_TEMPLATES; ?>[404]" value=""><?php echo $this->get_option( '404' ); ?></textarea>
 					</p>
 				</div>
 			</div>
@@ -881,10 +877,10 @@ return;
 	 */
 	public function admin_add_dashboard_widgets() {
 		
-		// Add custom WP Paintbrush feed
+		// Add custom feed
 		wp_add_dashboard_widget(
 			'wpbp_dashboard_custom_feed',
-			__( 'Latest Posts from WP Paintbrush', 'wppb_lang' ),
+			__( 'Latest Posts from Ryan', 'wppb_lang' ),
 			array( $this, 'dashboard_custom_feed_output' )
 		);
 	}
@@ -902,8 +898,8 @@ return;
 		echo '<div class="rss-widget" id="wppb-rss-widget">';
 		wp_widget_rss_output(
 			array(
-				'url'           => 'http://wppaintbrush.com/feed/',
-				'title'         => __( 'News from WP Paintbrush', 'wppb_lang' ),
+				'url'           => 'http://pixopoint.com/feed/',
+				'title'         => __( 'News from Ryan', 'wppb_lang' ),
 				'items'         => 3,
 				'show_summary'  => 1,
 				'show_author'   => 0,
@@ -1177,6 +1173,8 @@ return;
 			'front_page',
 			'home',
 			'archive',
+			'search',
+			'404',
 			'page',
 			'page_template_1',
 			'page_template_2',
@@ -1191,6 +1189,7 @@ return;
 
 		// Sanitize CSS
 		$output_templates['css'] = $this->validate_css( $templates['css'] );
+		$this->cache_css( $templates['css'] );
 
 		// Support for plain strings instead of arrays
 		if ( !is_array( $templates ) )
@@ -1215,6 +1214,30 @@ return;
 				</p>
 			</div>';
 		}
+	}
+
+	/**
+	 * Cache the CSS
+	 * Avoids loading CSS direct from DB
+	 * 
+	 * @todo Use WP http API
+	 * @since 1.0
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 * @param string $css
+	 */
+	private function cache_css( $css ) {
+
+		// Storing the file in the WP uploads folder
+		$uploads_dir = $this->get_uploads_dir();
+
+		// If the directory doesn't exist, make it ... note: this may not work on some servers. I should use WP HTTP API in future releases to fix this
+		if ( !is_dir( $uploads_dir ) )
+			mkdir( $uploads_dir, 0755 );
+
+		// Finally, store the CSS in a file
+		$css_file_location = $uploads_dir . '/style.css'; // File location
+		file_put_contents( $css_file_location, $css );
+
 	}
 
 	/**

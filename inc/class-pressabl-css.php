@@ -23,30 +23,10 @@ class Pressabl_CSS extends Pressabl {
 			return;
 
 		// Load stylesheet
-		// ******** If using static files, then should have check for file_exists here *********
-		add_action( 'init', array( $this, 'fallback_css' ) );
 		if ( isset( $_GET['pressabl-revision'] ) )
 			add_action( 'wp_print_styles', array( $this, 'inline_css' ) );
 		else
 			add_action( 'init', array( $this, 'external_css' ) );
-	}
-
-	/**
-	 * Load CSS from database if file doesn't exist
-	 * This would only be used if the server didn't support writing to the uploads folder (to store the CSS file)
-	 * 
-	 * @since 0.1
-	 * @author Ryan Hellyer <ryan@pixopoint.com>
-	 */
-	public function fallback_css() {
-
-		if ( empty( $_GET[PRESSABL_FUNCTIONS] ) )
-			return;
-
-		header( 'Content-Type: text/css; charset=' . get_option( 'blog_charset' ) . ''); // Loading correct MIME type
-		echo $this->get_option( 'css' );
-
-		exit; // Kill execution now since no point in loading rest of WP
 	}
 
 	/**
@@ -56,9 +36,26 @@ class Pressabl_CSS extends Pressabl {
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 */
 	public function external_css() {
-		wp_enqueue_style( PRESSABL_FUNCTIONS, home_url() . '/?' . PRESSABL_FUNCTIONS . '=css', false, '', 'screen' ); // Fallback for when file doesn't exist
+		$uploads_dir = $this->get_uploads_dir();
+		$css_file_location = $uploads_dir . '/style.css'; // File location
+
+		// Only load if file exists
+		if ( file_exists( $css_file_location ) ) {
+			$uploads_url = $this->get_uploads_dir( 'url' );
+			$css_file_url = $uploads_url . '/style.css'; // File location
+			wp_enqueue_style(
+				PRESSABL_FUNCTIONS,
+				$css_file_url,
+				false,
+				'',
+				'screen'
+			);
+		}
+		else {
+			add_action( 'wp_print_styles', array( $this, 'inline_css' ) );
+		}
 	}
-	
+
 	/**
 	 * Dump CSS out inline
 	 * Used for when testing, or if no ability to write files

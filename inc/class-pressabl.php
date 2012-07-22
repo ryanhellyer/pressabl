@@ -149,6 +149,21 @@ class Pressabl {
 	}
 
 	/**
+	 * Get uploads folder
+	 * 
+	 * @since 1.0
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 * @param string $type url or dir
+	 * @return string
+	 */
+	protected function get_uploads_dir( $type='dir' ) {
+		$uploads_folder = wp_upload_dir();
+		$upload_location = $uploads_folder['base' . $type] . '/pressabl';
+		return $upload_location;
+	}
+
+
+	/**
 	 * Register widgetized area and update sidebar with default widgets
 	 * 
 	 * @since 0.1
@@ -240,14 +255,40 @@ class Pressabl {
 		get_header();
 
 		/*
+		 * Grab 
+		 * Caching bits of templates
+		 * Only works with persistent object cache, otherwise hauls from DB each time
+		 */
+		$sections = array(
+			'header'   => 'header',
+			'template' => $this->template_choice(),
+			'footer'   => 'footer',
+		);
+		$bits = array();
+		foreach( $sections as $key => $bit ) {
+			$bits[$key] = wp_cache_get( 'pressabl-' . $bit );
+			if ( false === $bits[$key] ) {
+				$bits[$key] = $this->get_option( $bit );
+
+				// Cache template (requires persistent object cache, otherwise hauls from DB each time)
+				wp_cache_set(
+					'pressabl-' . $bit,          // Key
+					$bits[$key],                 // Data to be cached
+					'pressabl',                  // Cache group
+					PRESSABL_TEMPLATE_CACHE_TIME // Time to cache
+				);
+			}
+		}
+
+		/*
 		 * This is where all the magic happens inside the theme.
 		 * 
 		 * Templates are grabbing from database
 		 * The header and footer calls are replaced with their corresponding code
 		 * Shortcodes are parsed to automagically turn the templates into usable code
 		 */
-		$template = $this->get_option( $this->template_choice() ); // Load appropriate template
-		$template = str_replace( '[get_header]', $this->get_option( 'header' ), $template ); // Replacing header call with real code 
+		$template = $bits['template']; // Load appropriate template
+		$template = str_replace( '[get_header]', $bits['header'], $template ); // Replacing header call with real code 
 		$template = str_replace( '[get_footer]', $this->get_option( 'footer' ), $template ); // Replacing footer call with real code
 		$template = do_shortcode( $template ); // Creating content of shortcodes
 
@@ -305,8 +346,10 @@ class Pressabl {
 			return 'single';
 		elseif ( is_archive() && '' != $this->get_option( 'archive' ) )
 			return 'archive';
+		elseif ( is_search() && '' != $this->get_option( 'search' ) )
+			return 'search';
 		elseif ( is_404() )
-			return 'page';
+			return '404';
 		else
 			return 'index';
 	}
