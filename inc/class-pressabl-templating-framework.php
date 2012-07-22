@@ -699,12 +699,22 @@ class Pressabl_Templating_Framework {
 		// Escaping sidebar name
 		$name = esc_attr( $name );
 
-		// Need to use buffering here to avoid replicating code from dynamic_sidebar()
-		ob_start();
-		if ( !dynamic_sidebar( $name ) )
-			return do_shortcode( $content );
-		$widgets = ob_get_contents();
-		ob_end_clean();
+		// Grab widgets from cache
+		$widgets = get_transient( 'widgets-' . $name );
+
+		// If not in cache, then regenerate them
+		if ( $widgets === false ) {
+
+			// Need to use buffering here to avoid replicating code from dynamic_sidebar()
+			ob_start();
+			if ( !dynamic_sidebar( $name ) )
+				return do_shortcode( $content );
+			$widgets = ob_get_contents();
+			ob_end_clean();
+
+			// Cache the output for next time
+			set_transient( 'widgets-' . $name, $widgets, 60 );
+		}
 
 		return $widgets;
 	}

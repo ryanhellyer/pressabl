@@ -33,6 +33,7 @@ class Pressabl {
 	 * First attempts to load from functions, then defaults to templates
 	 * Initially loads option, but if preview set, revision set or if the option is not found, then defaults to grabbing a post
 	 *
+	 * @todo Use transients / object cache instead of option
 	 * @author Ryan Hellyer
 	 * @since 0.1
 	 * @return array or string
@@ -161,7 +162,6 @@ class Pressabl {
 		$upload_location = $uploads_folder['base' . $type] . '/pressabl';
 		return $upload_location;
 	}
-
 
 	/**
 	 * Register widgetized area and update sidebar with default widgets
@@ -309,22 +309,6 @@ class Pressabl {
 	}
 
 	/**
-	 * Grab storage folder
-	 * 
-	 * @since 0.1
-	 * @author Ryan Hellyer <ryan@pixopoint.com>
-	 * @return string
-	 */
-	public function storage_folder() {
-		$uploads_folder = wp_upload_dir(); // grab uploads folder
-		$folder = $uploads_folder['basedir'];  // grab the WP Paintbrush folder
-		$folder = $uploads_folder['baseurl'];  // grab the WP Paintbrush folder
-		$folder = $folder . '/' . WPPB_STORAGE_FOLDER;  // Add the WP Paintbrush folder to the string
-		
-		return $folder;
-	}
-	
-	/**
 	 * Load appropriate template
 	 * 
 	 * @since 0.8
@@ -353,7 +337,7 @@ class Pressabl {
 		else
 			return 'index';
 	}
-	
+
 	/**
 	 * Registering post thumbnails
 	 * @since 1.0

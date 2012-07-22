@@ -48,7 +48,7 @@ class Pressabl_CSS extends Pressabl {
 				$css_file_url,
 				false,
 				'',
-				'screen'
+				'all'
 			);
 		}
 		else {

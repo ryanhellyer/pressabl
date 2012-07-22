@@ -1227,6 +1227,9 @@ return;
 	 */
 	private function cache_css( $css ) {
 
+		// Removing
+		$css = str_replace( "\'", "'", $css );
+
 		// Storing the file in the WP uploads folder
 		$uploads_dir = $this->get_uploads_dir();
 
@@ -1275,7 +1278,7 @@ return;
 		$css = wp_kses_split( $prev = $css, array(), array() ); // Why KSES instead of strip_tags?  Who knows?
 		$css = str_replace( '&gt;', '>', $css ); // kses replaces lone '>' with &gt;
 		$css = strip_tags( $css ); // Why both KSES and strip_tags?  Because we just added some '>'.
-	
+
 		// Parse with CSS tidy
 		$csstidy->parse( $css ); // Parse with CSS Tidy
 		$css = $csstidy->print->plain(); // Grab CSS output
@@ -1303,7 +1306,7 @@ return;
 	
 		// Code Comments
 		$css = str_replace( "}/*", "}\n/*", $css ); // Prevents comments showing up immediately after { symbol
-	
+
 		// Nested brace correction
 		$css = str_replace( "}
 }", "	}\n}", $css ); // Indents first brace
@@ -1329,7 +1332,7 @@ return;
 		$css = implode( '{', $css );
 		$css = str_replace( '}{', '{', $css ); // Nasty hack to fix "{}" code bug
 		$css = substr( $css, 0, -1 ); // Nasty hack to remove final "}"
-		
+
 		return $css;
 	}
 	

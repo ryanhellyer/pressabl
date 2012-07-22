@@ -12,10 +12,10 @@ STUFF TO DO:
 4. Clean up CSS parsing code
 5. process_thumbnails() should not parsed stuff into different format ... need different method for that since also need to use sanitization function for stuff coming from data.tpl file ... ie: data.tpl isn't in same format as stuff direct from <form>. Probably have same problem on wdigets and menus too. Might pay to standardise parsing code across widgets, menus and thumbnails if possible too.
 6. Perhaps replace options with transients and ditch standard wp-cache calls - can then eliminate PRESSABL_TEMPLATE_CACHE_TIME since they'd be ditched at appropriate time anyway
-7. Use transient caching on widget sections - make sure it invalidates when widgets edited
+7. Check if using transients on widget section is useful when using object caching
 8. Allow for other page templates ... http://www.wptavern.com/forum/themes-templates/1926-creating-page-templates-via-plugin.html
 9. Allow for automatically added custom post-type templates
-10. Don't use PHP generated CSS file, use inline styling instead
+10. Use transients instead of get_option() in $this->get_option()
 11. Use WP HTTP API for CSS file
 12. Make sure CSS file uses different version on each edit of it
 
