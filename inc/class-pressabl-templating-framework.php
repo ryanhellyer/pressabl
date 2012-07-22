@@ -690,24 +690,25 @@ class Pressabl_Templating_Framework {
 		extract(
 			shortcode_atts(
 				array(
-					'number' => '' 
+					'name' => '' 
 				),
 				$atts
 			)
 		);
-	
-		if ( !is_numeric( $number ) )
-			return;
-		$number = (int) $number;
-	
+
+		// Escaping sidebar name
+		$name = esc_attr( $name );
+
+		// Need to use buffering here to avoid replicating code from dynamic_sidebar()
 		ob_start();
-		if ( !dynamic_sidebar( 'widgetarea' . $number ) )
+		if ( !dynamic_sidebar( $name ) )
 			return do_shortcode( $content );
 		$widgets = ob_get_contents();
 		ob_end_clean();
+
 		return $widgets;
 	}
-	
+
 	/**
 	 * [siteinfo] shortcode
 	 * @since 0.1

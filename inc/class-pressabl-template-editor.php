@@ -798,7 +798,7 @@ return;
 					</p>
 				</div>
 			</div>
-	
+
 			<div id="archives-options">
 				<div class="tab-inner">
 					<h3><?php _e( 'Archive template', 'pixopoint_theme_editor' ); ?></h3>
@@ -1176,6 +1176,7 @@ return;
 			'index',
 			'front_page',
 			'home',
+			'archive',
 			'page',
 			'page_template_1',
 			'page_template_2',
