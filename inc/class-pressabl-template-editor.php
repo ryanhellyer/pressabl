@@ -342,10 +342,6 @@ class Pressabl_Template_Editor extends Pressabl {
 			'menus'   => $menus,
 		);
 
-		// Cache primary settings in an option (can be accessed faster as an option - useful since this data is accessed on every page load)
-		if ( 'publish' == $post_status )
-			update_option( PRESSABL_FUNCTIONS, $primary );
-
 		// Stash content into another array and serialise it
 		$post_content = array(
 			'primary'   => $primary,
@@ -362,6 +358,24 @@ class Pressabl_Template_Editor extends Pressabl {
 
 		// Insert the post into the database
 		$post_id = wp_insert_post( $pressabl );
+
+		// Cache CSS into file
+		$this->cache_css( $secondary['css'], $post_id );
+
+		// Refresh the cache (would serve the wrong data otherwise)
+		$this->replace_cache( 'id', $post_id );
+		foreach( $secondary as $key => $value ) {
+			$this->replace_cache( $key, $value );
+		}
+		foreach( $thumbs as $key => $value ) {
+			$this->replace_cache( $key, $value );
+		}
+		foreach( $widgets as $key => $value ) {
+			$this->replace_cache( $key, $value );
+		}
+		foreach( $menus as $key => $value ) {
+			$this->replace_cache( $key, $value );
+		}
 
 		// Delete old posts
 		$args = array(
@@ -1189,7 +1203,6 @@ return;
 
 		// Sanitize CSS
 		$output_templates['css'] = $this->validate_css( $templates['css'] );
-		$this->cache_css( $templates['css'] );
 
 		// Support for plain strings instead of arrays
 		if ( !is_array( $templates ) )
@@ -1219,13 +1232,15 @@ return;
 	/**
 	 * Cache the CSS
 	 * Avoids loading CSS direct from DB
+	 * Uses the post ID to apply a version number to the file
 	 * 
 	 * @todo Use WP http API
 	 * @since 1.0
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
-	 * @param string $css
+	 * @param string $css The CSS to be saved
+	 * @param int $version The version number
 	 */
-	private function cache_css( $css ) {
+	private function cache_css( $css, $version ) {
 
 		// Removing
 		$css = str_replace( "\'", "'", $css );
@@ -1238,7 +1253,27 @@ return;
 			mkdir( $uploads_dir, 0755 );
 
 		// Finally, store the CSS in a file
-		$css_file_location = $uploads_dir . '/style.css'; // File location
+		$css_file_location = $uploads_dir . '/style-' . $version . '.css'; // File location
+
+/*
+		$url = wp_nonce_url('themes.php?page=edit_template',  'nerdcache' );
+		$method = '';
+		$form_fields = array ( 'Setup Nerd Cache' ); // this is a list of the form field contents I want passed along between page views
+		if ( false === ( $creds = request_filesystem_credentials( $url, $method, false, false, $form_fields ) ) ) {
+			return true; // stop the normal page form from displaying
+		}
+			
+		// now we have some credentials, try to get the wp_filesystem running
+		if ( ! WP_Filesystem($creds) ) {
+			// our credentials were no good, ask the user for them again
+			request_filesystem_credentials($url, $method, true, false, $form_fields);
+			return true;
+		}
+
+		// by this point, the $wp_filesystem global should be working, so let's use it to create a file
+		global $wp_filesystem;
+		$wp_filesystem->put_contents( $css_file_location, $css, FS_CHMOD_FILE);
+*/
 		file_put_contents( $css_file_location, $css );
 
 	}

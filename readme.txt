@@ -6,18 +6,17 @@ Requires at least: 3.4
 Stable tag: 1.0
 
 STUFF TO DO:
-1. Static file storage of CSS and templates
-2. Clean up syntax around line 720 of class-pixopoint-template-editor.php
-3. Add child theme system - including setting up default json encoded files ... register_theme()
-4. Clean up CSS parsing code
-5. process_thumbnails() should not parsed stuff into different format ... need different method for that since also need to use sanitization function for stuff coming from data.tpl file ... ie: data.tpl isn't in same format as stuff direct from <form>. Probably have same problem on wdigets and menus too. Might pay to standardise parsing code across widgets, menus and thumbnails if possible too.
-6. Force flush of cache on saving templates
-7. Add readme.txt FAQ that states that performance problems can be avoided by using persistent object cache
-8. Allow for other page templates ... http://www.wptavern.com/forum/themes-templates/1926-creating-page-templates-via-plugin.html
-9. Allow for automatically added custom post-type templates
-10. Remove dead references to update_option() since no data saved in option now
-11. Use WP HTTP API for CSS file
-12. Make sure CSS file uses different version on each edit of it
+1.  Draft feature not working
+2.  Clean up syntax around line 720 of class-pixopoint-template-editor.php
+3.  Add child theme system - including setting up default json encoded files ... register_theme()
+4.  Clean up CSS parsing code
+5.  process_thumbnails() should not parsed stuff into different format ... need different method for that since also need to use sanitization function for stuff coming from data.tpl file ... ie: data.tpl isn't in same format as stuff direct from <form>. Probably have same problem on wdigets and menus too. Might pay to standardise parsing code across widgets, menus and thumbnails if possible too.
+6.  Create new screenshot file
+7.  Add readme.txt FAQ that states that performance problems can be avoided by using persistent object cache
+8.  Allow for other page templates ... http://www.wptavern.com/forum/themes-templates/1926-creating-page-templates-via-plugin.html
+9.  Allow for automatically added custom post-type templates
+10. Use WP HTTP API for CSS file
+11. Add image upload page
 
 The file is a work in progress ... 
 

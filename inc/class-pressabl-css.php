@@ -37,12 +37,12 @@ class Pressabl_CSS extends Pressabl {
 	 */
 	public function external_css() {
 		$uploads_dir = $this->get_uploads_dir();
-		$css_file_location = $uploads_dir . '/style.css'; // File location
+		$css_file_location = $uploads_dir . '/style-' . $this->get_option( 'id' ) . '.css'; // File location
 
 		// Only load if file exists
 		if ( file_exists( $css_file_location ) ) {
 			$uploads_url = $this->get_uploads_dir( 'url' );
-			$css_file_url = $uploads_url . '/style.css'; // File location
+			$css_file_url = $uploads_url . '/style-' . $this->get_option( 'id' ) . '.css'; // File location
 			wp_enqueue_style(
 				PRESSABL_FUNCTIONS,
 				$css_file_url,

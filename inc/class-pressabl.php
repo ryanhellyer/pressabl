@@ -57,7 +57,12 @@ class Pressabl {
 			$revision = (int) $_GET['pressabl-revision'];
 		}
 
-		$options[$option] = wp_cache_get( 'pressabl-option-' . $option );
+		// Grab from cache if requesting current version
+		if ( $revision == 1 )
+			$options[$option] = get_transient( 'pressabl-option-' . $option );
+		else
+			$options[$option] = false;
+
 		if ( false === $options[$option] ) {
 
 			// Grabbing post data from DB
@@ -75,18 +80,33 @@ class Pressabl {
 			if ( empty( $options[$option] ) )
 				$options = $content['secondary'];
 
+			if ( 'id' == $option )
+				$options[$option] = $post->ID;
+
 			// Cache template (requires persistent object cache, otherwise hauls from post every time)
-			wp_cache_replace(
-				'pressabl-option-' . $option, // Key
-				$options[$option],            // Data to be cached
-				'',                           // Cache group
-				PRESSABL_CACHE_TIME           // Time to cache
-			);
+			if ( $revision == 1 )
+				$this->replace_cache( $option, $options[$option] );
 		}
 
 		// Choose which bit to return
 		if ( isset( $options[$option] ) )
 			return $options[$option];
+	}
+
+	/**
+	 * Create custom post type for storing templates
+	 *
+	 * @since 1.0
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 * @return void
+	 */
+	public function replace_cache( $key, $value ) {
+		delete_transient( $key ); // Delete it in case we're replacing an existing copy
+		set_transient(
+			'pressabl-option-' . $key,                // Key
+			$value,              // Data to be cached
+			PRESSABL_CACHE_TIME  // Time to cache
+		);
 	}
 
 	/**
@@ -253,8 +273,6 @@ class Pressabl {
 
 		/*
 		 * Grab 
-		 * Caching bits of templates
-		 * Only works with persistent object cache, otherwise hauls from DB each time
 		 */
 		$sections = array(
 			'header'   => 'header',
@@ -263,20 +281,7 @@ class Pressabl {
 		);
 		$bits = array();
 		foreach( $sections as $key => $bit ) {
-//			$bits[$key] = wp_cache_get( 'pressabl-' . $bit );
-//			if ( false === $bits[$key] ) {
-				$bits[$key] = $this->get_option( $bit );
-
-/*
- *				// Cache template (requires persistent object cache, otherwise hauls from DB each time)
-				wp_cache_set(
-					'pressabl-' . $bit,          // Key
-					$bits[$key],                 // Data to be cached
-					'pressabl',                  // Cache group
-					PRESSABL_TEMPLATE_CACHE_TIME // Time to cache
-				);
-			}
-			*/
+			$bits[$key] = $this->get_option( $bit );
 		}
 
 		/*

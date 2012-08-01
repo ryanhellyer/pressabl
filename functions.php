@@ -55,8 +55,8 @@ define( 'PRESSABL_TEMPLATES', 'wppb_templates' ); // Label for option used to st
 define( 'PRESSABL_FUNCTIONS', 'wppb_functions' ); // Label for option used to store template code in database
 define( 'PRESSABL_COPYRIGHT', '<a href="http://pressabl.com/">pressabl.com</a>. Powered by <a href="http://wordpress.org/">WordPress</a>.' );
 define( 'PRESSABL_VERSION', '1.0' ); // Version of WP Paintbrush used
-define( 'PRESSABL_REVISIONS', 100 ); // Number of revisions to store
-define( 'PRESSABL_CACHE_TIME', 30 ); // Number of seconds to cache templates for
+define( 'PRESSABL_REVISIONS', 20 ); // Number of revisions to store
+define( 'PRESSABL_CACHE_TIME', 10000 ); // Number of seconds to cache templates for
 
 
 
