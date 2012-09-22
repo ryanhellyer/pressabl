@@ -83,7 +83,7 @@ class Pressabl {
 			if ( 'id' == $option )
 				$options[$option] = $post->ID;
 
-			// Cache template (requires persistent object cache, otherwise hauls from post every time)
+			// Cache template
 			if ( $revision == 1 )
 				$this->replace_cache( $option, $options[$option] );
 		}
@@ -94,7 +94,7 @@ class Pressabl {
 	}
 
 	/**
-	 * Create custom post type for storing templates
+	 * Purge/replace the template cache
 	 *
 	 * @since 1.0
 	 * @author Ryan Hellyer <ryan@pixopoint.com>

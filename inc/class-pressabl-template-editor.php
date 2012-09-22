@@ -26,6 +26,8 @@ class Pressabl_Template_Editor extends Pressabl {
 	 * @author Ryan Hellyer <ryan@pixopoint.com>
 	 */
 	public function __construct() {
+		add_action( 'wp_ajax_choice',     array( $this, 'export_theme_modal' ) );
+		add_action( 'init',               array( $this, 'export_theme' ) );
 		add_action( 'init',               array( $this, 'register_theme' ) );
 		add_action( 'admin_menu',         array( $this, 'add_admin_page' ) );
 		add_action( 'wp_dashboard_setup', array( $this, 'admin_add_dashboard_widgets' ) );
@@ -268,8 +270,25 @@ class Pressabl_Template_Editor extends Pressabl {
 		add_action( 'admin_print_styles-' . $page, array( $this, 'admin_styles' ) ); // Add styles (only for this admin page)
 		add_action( 'admin_print_styles-' . $page, array( $this, 'admin_scripts' ) );
 
+		add_action( 'admin_print_scripts-' . $page, array( &$this, 'js_libs' ) );
+		add_action( 'admin_print_styles-' . $page, array( &$this, 'style_libs' ) );
+	
+
 		// Register a new WordPress option
 		register_setting( 'pressabl', PRESSABL_FUNCTIONS );
+	}
+	
+	function add_admin() {
+		add_theme_page('Black Or White?', 'Black Or White?', 'administrator', 'black-or-white', array(&$this, 'admin_view'));
+	}
+	
+	function js_libs() {
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('thickbox');
+	}
+	
+	function style_libs() {
+		wp_enqueue_style('thickbox');
 	}
 
 	/**
@@ -839,6 +858,29 @@ return;
 			<?php _e( 'Preview', 'pixopoint_theme_editor' ); ?>
 		</a>
 
+		<script type="text/javascript">
+		</script>
+<br><br><br><br>
+<br><br><br><br>
+		<p style="float:left;margin-top:40px;">
+			<a class="thickbox button" href="<?php echo admin_url(); ?>admin-ajax.php?action=choice&width=550&height=400" title="Choose">
+				Choose
+			</a>
+		</p>
+		<p>
+			Your choice: <span class="your-choice"></span>
+		</p>
+<br><br><br><br>
+
+		<a class="button" href="<?php
+			$url = admin_url() . '?pressabl-export=yup';
+			$url = wp_nonce_url( $url, 'pressabl-export' );
+			$url = esc_url( $url );
+			echo $url;
+		?>">
+			<?php _e( 'Export theme', 'pixopoint_theme_editor' ); ?>
+		</a>
+
 		<select name="pressabl-revisions" id="pressabl-revisions">
 			<option disabled="disabled"><?php _e( 'Choose a revision', 'pixopoint_theme_editor' ); ?></option><?php
 			$count = 1;
@@ -881,6 +923,74 @@ return;
 </form>
 </div><?php
 
+	}
+
+	/*
+	 * Modal box for theme exports
+	 * 
+	 * @since 1.0
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 */
+	public function export_theme_modal() {
+		echo '<form method="POST" action="' . admin_url( 'themes.php?page=edit_template' ) . '">';
+
+		// Add nonce for security protection
+		wp_nonce_field( 'pressabl-export', 'pressabl-export' );
+
+		// Grab all the data we need
+		$current_user = wp_get_current_user();
+		$user_id = $current_user->ID;
+		$current_user = get_userdata( $user_id );
+		$first_name = get_user_meta( $user_id, 'first_name', true );
+		$last_name = get_user_meta( $user_id, 'last_name', true );
+		$user_url = $current_user->user_url;
+		$user_email = $current_user->user_email;
+
+		// Stick all the data into a big fat array
+		$style_meta = array(
+			'theme-name' => array(
+				'label' => __( 'Theme Name', 'pressabl' ),
+				'value' => get_bloginfo( 'name' ),
+			),
+			'theme-url' => array(
+				'label' => __( 'Theme URI', 'pressabl' ),
+				'value' => home_url( '/' ),
+			),
+			'theme-description' => array(
+				'label' => __( 'Theme Description', 'pressabl' ),
+				'value' => get_bloginfo( 'description' ),
+			),
+			'author' => array(
+				'label' => __( 'Author Name', 'pressabl' ),
+				'value' => $first_name . ' ' . $last_name,
+			),
+			'user_url' => array(
+				'label' => __( 'Author URI', 'pressabl' ),
+				'value' => $user_url,
+			),
+			'user_email' => array(
+				'label' => __( 'Author URI', 'pressabl' ),
+				'value' => $user_email,
+			),
+			'version' => array(
+				'label' => __( 'Version', 'pressabl' ),
+				'value' => '1.0',
+			),
+			'tags' => array(
+				'label' => __( 'Tags', 'pressabl' ),
+				'value' => '',
+			),
+		);
+
+		foreach( $style_meta as $key => $value ) {
+			echo '
+			<p>
+				<label for="' . $key . '">' . $value['label'] . '</label>
+				<input id="' . $key . '" type="text" value="" placeholder="' . $value['value'] . '" />
+			</p>
+		</form>';
+		}
+		exit();
 	}
 
 	/**
@@ -1245,6 +1355,9 @@ return;
 		// Removing
 		$css = str_replace( "\'", "'", $css );
 
+		// Fixing bug in background image URLs
+		$css = str_replace( 'http: //', 'http://', $css );
+
 		// Storing the file in the WP uploads folder
 		$uploads_dir = $this->get_uploads_dir();
 
@@ -1370,5 +1483,93 @@ return;
 
 		return $css;
 	}
-	
+
+	/**
+	 * Export theme
+	 * 
+	 * @since 1.0
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 */
+	public function export_theme() {
+		if ( empty($_POST) || !wp_verify_nonce($_POST['name_of_nonce_field'],'name_of_my_action') ) {
+			return new WP_Error(' broke', 'nonce security error' );
+		}
+
+		// Grabbing post data from DB
+		$args = array(
+			'post_type'    => 'pressabl',
+			'numberposts'  => 1,
+			'post_status'  => 'Publish',
+		);
+		$post    = $posts[0]; // Select the desired revision (substract one as array starts at zero)
+		$posts   = get_posts( $args ); // Grab posts as array
+		$posts = serialize( $posts );
+
+		$rand = $folder = 'temp';
+
+	// Load template files
+	$files = array(
+		$folder . '/data.tpl'             => $posts,
+		$folder . '/style.css'            => 'Some CSS goes here',
+	);
+
+	// Load image files (current does ROOT due to lack of any image files)
+	$file_list = $this->list_files_in_dir( $this->get_uploads_dir() . '/' ); // Grab list of  files in folder
+	foreach ( $file_list as $file ) {
+		$files[$folder . '/images/' . $file] = file_get_contents( $this->get_uploads_dir() . '/' . $file );
+	}
+
+	// Create zip file
+	$zip = new ZipArchive();
+	$rand = rand();
+	$zip->open( 'temp' . $rand . '.tmp', ZIPARCHIVE::CREATE );
+	if ( $files ) foreach( $files as $localname => $source ) {
+		if ( is_file( $source ) )
+			$zip->addFile( $source, $localname );
+		else
+			$zip->addFromString( $localname, $source );
+	}
+	$zip->close();
+
+		// Downloading zip
+		header( 'Content-type: application/zip' ); // File header
+		header( 'Content-Disposition: attachment; filename="' . $folder . '.zip"' ); // File header
+		readfile( 'temp' . $rand . '.tmp' ); // Read temporary file from disk
+		unlink( 'temp' . $rand . '.tmp' ); // Delete temporary file
+
+		die;
+		$content_raw = $post->post_content; // Grab post content
+		$content = unserialize( $content_raw ); // Unserialize the array
+		$save_data = serialize( $content );
+	}
+
+	/*
+	 * Returns an array containing an alphabetical list of files in the specified directory ($path)
+	 * 
+	 * @since 0.1
+	 * @author Ryan Hellyer <ryan@pixopoint.com>
+	 */
+	public function list_files_in_dir( $path ) {
+		$list = array(); // Initialise a variable
+		if ( !file_exists( $path ) )
+			return false;
+		$dir_handle = @opendir( $path ) or die( "Unable to open $path" ); // Attempt to open path
+		while( $file = readdir( $dir_handle ) ) { // Loop through all the files in the path
+			if ( $file == '.' || $file == '..' )
+				continue;// Ignore these
+			$filename = explode( '.', $file ); // Separate filename from extension
+			$cnt = count( $filename );
+			$cnt--;
+			$ext = $filename[$cnt]; // As above
+			array_push( $list, $file ); // Stick it onto the end of the list array
+		}
+		// ... if matches were found ...
+		if ( $list[0] )
+			return $list; //...return the array
+		else
+			return false;
+	}
 }
+
+
+
